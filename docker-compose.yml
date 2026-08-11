@@ -1,0 +1,17 @@
+services:
+  database:
+    image: postgres:18
+    container_name: postgres_db
+    restart: unless-stopped
+    ports:
+      - '4321:5432'
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-conrod}
+    volumes:
+      - database_data:/var/lib/postgresql
+
+volumes:
+  database_data:
+    driver: local
