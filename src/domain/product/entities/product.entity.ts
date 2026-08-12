@@ -1,0 +1,32 @@
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+
+import { RegistryDates } from 'common/embedded/registry-date.embedded';
+import { Category } from 'domain/categories/entities/category.entity';
+
+@Entity()
+export class Product {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ unique: true })
+  name: string;
+
+  @Column({ nullable: true })
+  description: string;
+
+  @Column({ type: 'decimal', precision: 4, scale: 2 })
+  price: number;
+
+  @Column(() => RegistryDates, { prefix: false })
+  registryDates: RegistryDates;
+
+  @JoinTable({ name: 'product_to_category' })
+  @ManyToMany(() => Category, (category) => category.products)
+  categories: Category[];
+}
