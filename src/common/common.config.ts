@@ -9,7 +9,7 @@ export const VALIDATION_PIPE_OPTIONS = {
   },
 } satisfies ValidationPipeOptions;
 
-export const DefaultPageSizes = { USERS: 10 } as const satisfies Record<
-  string,
-  number
->;
+export const DefaultPageSizes = {
+  USERS: 10,
+  ORDERS: 5,
+} as const satisfies Record<string, number>;
