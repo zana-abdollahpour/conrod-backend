@@ -1,14 +1,12 @@
-import { DATABASE_CONFIG } from 'database/database.config';
+import * as dotenv from 'dotenv';
+import * as dotenvExpand from 'dotenv-expand';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
-// TODO: fix issues via config module
+dotenvExpand.expand(dotenv.config());
+
 const DATASOURCE_OPTIONS = {
-  type: DATABASE_CONFIG.type,
-  username: DATABASE_CONFIG.username,
-  password: DATABASE_CONFIG.password,
-  database: DATABASE_CONFIG.database,
-  host: DATABASE_CONFIG.host,
-  port: DATABASE_CONFIG.port,
+  type: 'postgres',
+  url: process.env.DATASOURCE_URL,
   entities: ['dist/domain/**/*.entity.js'],
   migrations: ['dist/database/migrations/*.js'],
 } satisfies DataSourceOptions;
