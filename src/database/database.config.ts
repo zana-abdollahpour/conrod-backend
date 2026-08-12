@@ -1,9 +1,5 @@
-import { TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
+import { registerAs } from '@nestjs/config';
 
-export const DATABASE_CONFIG = {
-  useFactory: () => ({
-    type: 'postgres',
-    url: process.env.DATASOURCE_URL,
-    autoLoadEntities: true,
-  }),
-} as const satisfies TypeOrmModuleAsyncOptions;
+export default registerAs('database', () => ({
+  url: process.env.DATASOURCE_URL,
+}));
