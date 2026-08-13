@@ -13,34 +13,34 @@ import { IdDto } from 'common/dto/id.dto';
 import { PaginationDto } from 'common/dto/pagination.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ProductService } from './product.service';
+import { ProductsService } from './product.service';
 
-@Controller('product')
+@Controller('products')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productsService: ProductsService) {}
 
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
+    return this.productsService.create(createProductDto);
   }
 
   @Get()
   findAll(@Query() paginationDto: PaginationDto) {
-    return this.productService.findAll(paginationDto);
+    return this.productsService.findAll(paginationDto);
   }
 
   @Get(':id')
   findOne(@Param() { id }: IdDto) {
-    return this.productService.findOne(id);
+    return this.productsService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param() { id }: IdDto, @Body() updateProductDto: UpdateProductDto) {
-    return this.productService.update(id, updateProductDto);
+    return this.productsService.update(id, updateProductDto);
   }
 
   @Delete(':id')
   remove(@Param() { id }: IdDto) {
-    return this.productService.remove(id);
+    return this.productsService.remove(id);
   }
 }
