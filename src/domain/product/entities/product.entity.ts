@@ -22,7 +22,7 @@ export class Product {
   @Column({ nullable: true })
   description: string;
 
-  @Column({ type: 'decimal', precision: 4, scale: 2 })
+  @Column({ type: 'decimal', precision: 8, scale: 2 })
   price: number;
 
   @Column(() => RegistryDates, { prefix: false })

@@ -9,7 +9,7 @@ export class OrderItem {
   @Column()
   quantity: number;
 
-  @Column({ type: 'decimal', precision: 4, scale: 2 })
+  @Column({ type: 'decimal', precision: 8, scale: 2 })
   price: number;
 
   @ManyToOne(() => Order, (order) => order.items, { onDelete: 'CASCADE' })
