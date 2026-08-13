@@ -1,27 +1,83 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+import { DefaultPageSizes } from 'common/common.config';
 import { PaginationDto } from 'common/dto/pagination.dto';
+import { OrderItemDto } from 'domain/orders/dto/order-item.dto';
+import { OrderItem } from 'domain/orders/entities/order-item.entity';
+import { Product } from 'domain/product/entities/product.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
+import { Order } from './entities/order.entity';
 
 @Injectable()
 export class OrdersService {
-  create(createOrderDto: CreateOrderDto) {
-    return 'This action adds a new order';
+  constructor(
+    @InjectRepository(Order)
+    private readonly ordersRepository: Repository<Order>,
+    @InjectRepository(Product)
+    private readonly productsRepository: Repository<Product>,
+    @InjectRepository(OrderItem)
+    private readonly orderItemsRepository: Repository<OrderItem>,
+  ) {}
+
+  async create(createOrderDto: CreateOrderDto) {
+    const { items } = createOrderDto;
+
+    const itemsWithPrices = await Promise.all(
+      items.map((item) => this.createOrderItemWithPrice(item)),
+    );
+
+    const order = this.ordersRepository.create({
+      ...createOrderDto,
+      items: itemsWithPrices,
+    });
+    return this.ordersRepository.save(order);
   }
 
   findAll(paginationDto: PaginationDto) {
-    return `This action returns all orders`;
+    const { limit, offset } = paginationDto;
+
+    const skip = offset;
+    const take = limit || DefaultPageSizes.ORDERS;
+
+    return this.ordersRepository.find({ skip, take });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
+  async findOne(id: number) {
+    const order = await this.ordersRepository.findOne({
+      where: { id },
+      relations: { items: { product: true }, customer: true, payment: true },
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    return order;
   }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
+  async remove(id: number) {
+    const order = await this.findOne(id);
+
+    return this.ordersRepository.remove(order);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} order`;
+  private async createOrderItemWithPrice(orderItemDto: OrderItemDto) {
+    const { id } = orderItemDto.product;
+    const product = await this.productsRepository.findOneBy({ id });
+
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
+    const { price } = product;
+
+    const orderItem = this.orderItemsRepository.create({
+      ...orderItemDto,
+      price,
+    });
+
+    return orderItem;
   }
 }

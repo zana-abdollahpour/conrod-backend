@@ -9,7 +9,7 @@ import {
 import { IsCurrency } from 'common/decorators/is-currency.decorator';
 import { IsIdEntity } from 'common/decorators/is-id-entity.decorator';
 import { IdDto } from 'common/dto/id.dto';
-import { idDtoIdentifier } from 'common/util/id.util';
+import { IdentifierFuncs } from 'common/util/id.util';
 
 export class CreateProductDto {
   @IsString()
@@ -25,7 +25,7 @@ export class CreateProductDto {
   price: number;
 
   @ArrayNotEmpty()
-  @ArrayUnique(idDtoIdentifier)
+  @ArrayUnique(IdentifierFuncs.ID_DTO)
   @IsIdEntity()
   categories: IdDto[];
 }
