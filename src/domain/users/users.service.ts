@@ -32,7 +32,7 @@ export class UsersService {
   async findOne(id: number) {
     const user = await this.usersRepository.findOne({
       where: { id },
-      relations: { orders: true },
+      relations: { orders: { items: true, payment: true } },
     });
 
     if (!user) {
@@ -52,9 +52,11 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  async remove(id: number) {
+  async remove(id: number, soft: boolean) {
     const user = await this.findOne(id);
 
-    return this.usersRepository.remove(user);
+    return soft
+      ? this.usersRepository.softRemove(user)
+      : this.usersRepository.remove(user);
   }
 }
