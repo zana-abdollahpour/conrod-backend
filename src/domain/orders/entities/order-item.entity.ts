@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  DeleteDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryColumn,
+} from 'typeorm';
 
 import { Expose } from 'class-transformer';
 import { Order } from 'domain/orders/entities/order.entity';
@@ -23,6 +29,9 @@ export class OrderItem {
 
   @PrimaryColumn()
   productId: number;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 
   @Expose()
   get subTotal() {
