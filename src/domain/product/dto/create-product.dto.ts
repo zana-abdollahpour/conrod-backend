@@ -6,8 +6,8 @@ import {
   Length,
 } from 'class-validator';
 
-import { IsCurrency } from 'common/decorators/is-currency.decorator';
-import { IsIdEntity } from 'common/decorators/is-id-entity.decorator';
+import { IsCurrency } from 'common/decorators/validators/is-currency.decorator';
+import { IsIdEntity } from 'common/decorators/validators/is-id-entity.decorator';
 import { IdDto } from 'common/dto/id.dto';
 import { IdentifierFuncs } from 'common/util/id.util';
 
