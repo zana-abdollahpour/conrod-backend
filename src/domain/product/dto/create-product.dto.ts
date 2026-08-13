@@ -1,1 +1,31 @@
-export class CreateProductDto {}
+import {
+  ArrayNotEmpty,
+  ArrayUnique,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
+
+import { IsCurrency } from 'common/decorators/is-currency.decorator';
+import { IsIdEntity } from 'common/decorators/is-id-entity.decorator';
+import { IdDto } from 'common/dto/id.dto';
+import { idDtoIdentifier } from 'common/util/id.util';
+
+export class CreateProductDto {
+  @IsString()
+  @Length(2, 40)
+  name: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(1, 500)
+  description: string;
+
+  @IsCurrency()
+  price: number;
+
+  @ArrayNotEmpty()
+  @ArrayUnique(idDtoIdentifier)
+  @IsIdEntity()
+  categories: IdDto[];
+}
