@@ -5,7 +5,7 @@ const toBoolean = (value: unknown) => {
     case null:
       return 'failure';
     case 'true':
-      return false;
+      return true;
     case 'false':
       return false;
     default:
