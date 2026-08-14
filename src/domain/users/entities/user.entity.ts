@@ -26,4 +26,8 @@ export class User {
     cascade: ['soft-remove', 'recover'],
   })
   orders: Order[];
+
+  get isDeleted() {
+    return !!this.registryDates.deletedAt;
+  }
 }
