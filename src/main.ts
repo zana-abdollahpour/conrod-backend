@@ -1,5 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import helmet from 'helmet';
 
 import { AppModule } from './app.module';
 
@@ -10,6 +11,8 @@ async function bootstrap() {
   app.enableCors({
     // TODO: configure properly
   });
+
+  app.use(helmet());
   const port = configService.get<number>('APP_PORT');
 
   await app.listen(port ?? 3000);
