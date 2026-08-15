@@ -4,11 +4,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { genSalt, hash } from 'bcrypt';
 import { Repository } from 'typeorm';
 
 import { DefaultPageSizes } from 'common/common.config';
 import { PaginationDto } from 'common/dto/pagination.dto';
+import { HashingService } from 'iam/hashing/hashing.abstract.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -18,10 +18,13 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    private readonly hashingService: HashingService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const hashedPassword = await this.hashPassword(createUserDto.password);
+    const hashedPassword = await this.hashingService.hash(
+      createUserDto.password,
+    );
 
     const user = this.usersRepository.create({
       ...createUserDto,
@@ -56,7 +59,7 @@ export class UsersService {
   async update(id: number, updateUserDto: UpdateUserDto) {
     let hashedPassword: string;
     if (updateUserDto.password) {
-      hashedPassword = await this.hashPassword(updateUserDto.password);
+      hashedPassword = await this.hashingService.hash(updateUserDto.password);
     }
 
     const user = await this.usersRepository.preload({
@@ -99,10 +102,5 @@ export class UsersService {
     return this.usersRepository.findOne({
       where: { id },
     });
-  }
-
-  private async hashPassword(password: string) {
-    const salt = await genSalt();
-    return hash(password, salt);
   }
 }
