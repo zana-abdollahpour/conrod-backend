@@ -3,13 +3,13 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
-import type { Request } from 'express';
 
 import { AuthenticationService } from 'iam/authentication/auth.service';
+import { CurrentUser } from 'iam/authentication/decorators/current-user.decorator';
 import { LocalAuthGuard } from 'iam/authentication/guards/local-auth.guard';
+import type { RequestUser } from 'iam/authentication/interfaces/request-user.interface';
 
 @Controller('auth')
 export class AuthenticationController {
@@ -18,7 +18,7 @@ export class AuthenticationController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  login(@Req() request: Request) {
-    return request?.user;
+  login(@CurrentUser() currentUser: RequestUser) {
+    return currentUser;
   }
 }

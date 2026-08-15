@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { User } from 'domain/users/entities/user.entity';
+import { RequestUser } from 'iam/authentication/interfaces/request-user.interface';
 import { HashingService } from 'iam/hashing/hashing.abstract.service';
 
 @Injectable()
@@ -29,6 +30,7 @@ export class AuthenticationService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    return { id: user.id };
+    const requestUser: RequestUser = { id: user.id };
+    return requestUser;
   }
 }
