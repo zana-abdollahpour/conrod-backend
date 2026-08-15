@@ -3,8 +3,10 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Res,
   UseGuards,
 } from '@nestjs/common';
+import type { Response } from 'express';
 
 import { AuthenticationService } from 'iam/authentication/auth.service';
 import { CurrentUser } from 'iam/authentication/decorators/current-user.decorator';
@@ -20,7 +22,15 @@ export class AuthenticationController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  login(@CurrentUser() currentUser: RequestUser) {
-    return this.authenticationService.login(currentUser);
+  login(
+    @CurrentUser() currentUser: RequestUser,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const token = this.authenticationService.login(currentUser);
+    response.cookie('token', token, {
+      secure: true,
+      httpOnly: true,
+      sameSite: 'lax',
+    });
   }
 }
