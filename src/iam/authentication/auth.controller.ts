@@ -21,6 +21,6 @@ export class AuthenticationController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   login(@CurrentUser() currentUser: RequestUser) {
-    return currentUser;
+    return this.authenticationService.login(currentUser);
   }
 }

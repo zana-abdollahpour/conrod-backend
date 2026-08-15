@@ -1,8 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { User } from 'domain/users/entities/user.entity';
+import { JwtPayload } from 'iam/authentication/interfaces/jwt-payload.interface';
 import { RequestUser } from 'iam/authentication/interfaces/request-user.interface';
 import { HashingService } from 'iam/hashing/hashing.abstract.service';
 
@@ -12,6 +14,7 @@ export class AuthenticationService {
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
     private readonly hashingService: HashingService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async validateLocal(email: string, password: string) {
@@ -32,5 +35,10 @@ export class AuthenticationService {
 
     const requestUser: RequestUser = { id: user.id };
     return requestUser;
+  }
+
+  login(user: RequestUser) {
+    const payload: JwtPayload = { sub: user.id };
+    return this.jwtService.sign(payload);
   }
 }
