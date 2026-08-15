@@ -8,7 +8,6 @@ import { Repository } from 'typeorm';
 
 import { DefaultPageSizes } from 'common/common.config';
 import { PaginationDto } from 'common/dto/pagination.dto';
-import { HashingService } from 'iam/hashing/hashing.abstract.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -18,18 +17,10 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-    private readonly hashingService: HashingService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const hashedPassword = await this.hashingService.hash(
-      createUserDto.password,
-    );
-
-    const user = this.usersRepository.create({
-      ...createUserDto,
-      password: hashedPassword,
-    });
+    const user = this.usersRepository.create(createUserDto);
 
     return this.usersRepository.save(user);
   }
@@ -57,15 +48,9 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    let hashedPassword: string;
-    if (updateUserDto.password) {
-      hashedPassword = await this.hashingService.hash(updateUserDto.password);
-    }
-
     const user = await this.usersRepository.preload({
       id,
       ...updateUserDto,
-      ...(hashedPassword && { password: hashedPassword }),
     });
 
     if (!user) {
