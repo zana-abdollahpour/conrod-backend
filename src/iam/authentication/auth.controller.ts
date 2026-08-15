@@ -11,7 +11,9 @@ import { CurrentUser } from 'iam/authentication/decorators/current-user.decorato
 import { LocalAuthGuard } from 'iam/authentication/guards/local-auth.guard';
 import type { RequestUser } from 'iam/authentication/interfaces/request-user.interface';
 
-@Controller('auth')
+export const AUTH_CONTROLLER_PREFIX = 'auth';
+
+@Controller(AUTH_CONTROLLER_PREFIX)
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
