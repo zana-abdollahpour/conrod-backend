@@ -12,6 +12,8 @@ import {
 import { IdDto } from 'common/dto/id.dto';
 import { PaginationDto } from 'common/dto/pagination.dto';
 import { Public } from 'iam/authentication/decorators/public.decorator';
+import { Roles } from 'iam/authorization/decorators/roles.decorator';
+import { Role } from 'iam/authorization/enum/roles.enum';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './product.service';
@@ -20,6 +22,7 @@ import { ProductsService } from './product.service';
 export class ProductController {
   constructor(private readonly productsService: ProductsService) {}
 
+  @Roles(Role.MANAGER, Role.ADMIN)
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
@@ -37,11 +40,13 @@ export class ProductController {
     return this.productsService.findOne(id);
   }
 
+  @Roles(Role.MANAGER, Role.ADMIN)
   @Patch(':id')
   update(@Param() { id }: IdDto, @Body() updateProductDto: UpdateProductDto) {
     return this.productsService.update(id, updateProductDto);
   }
 
+  @Roles(Role.MANAGER, Role.ADMIN)
   @Delete(':id')
   remove(@Param() { id }: IdDto) {
     return this.productsService.remove(id);

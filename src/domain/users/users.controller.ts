@@ -13,6 +13,8 @@ import { IdDto } from 'common/dto/id.dto';
 import { PaginationDto } from 'common/dto/pagination.dto';
 import { RemoveDto } from 'common/dto/remove.dto';
 import { Public } from 'iam/authentication/decorators/public.decorator';
+import { Roles } from 'iam/authorization/decorators/roles.decorator';
+import { Role } from 'iam/authorization/enum/roles.enum';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
@@ -27,11 +29,13 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @Roles(Role.MANAGER, Role.ADMIN)
   @Get()
   findAll(@Query() paginationDto: PaginationDto) {
     return this.usersService.findAll(paginationDto);
   }
 
+  @Roles(Role.MANAGER, Role.ADMIN)
   @Get(':id')
   findOne(@Param() { id }: IdDto) {
     return this.usersService.findOne(id);
