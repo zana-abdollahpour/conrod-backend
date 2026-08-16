@@ -7,15 +7,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import jwtConfig from 'iam/authentication/config/jwt.config';
 import { JwtAuthGuard } from 'iam/authentication/guards/jwt-auth.guard';
-import { JwtStrategy } from 'iam/authentication/strategies/jwt.strategy';
-
-import {
-  AUTH_CONTROLLER_PREFIX,
-  AuthenticationController,
-} from 'iam/authentication/auth.controller';
-import { AuthenticationService } from 'iam/authentication/auth.service';
 import { LoginValidationMiddleware } from 'iam/authentication/middlewares/login-validation.middleware';
+import { JwtStrategy } from 'iam/authentication/strategies/jwt.strategy';
 import { LocalStrategy } from 'iam/authentication/strategies/local.strategy';
+
+import { AuthenticationController } from 'iam/authentication/authentication.controller';
+import { AuthenticationService } from 'iam/authentication/authentication.service';
+import { AuthorizationController } from 'iam/authorization/authorization.controller';
+import { AuthorizationService } from 'iam/authorization/authorization.service';
+import { AUTH_CONTROLLER_PREFIX } from 'iam/iam.constants';
 
 import { User } from 'domain/users/entities/user.entity';
 import { BcryptService } from 'iam/hashing/bcrypt.service';
@@ -28,9 +28,10 @@ import { HashingService } from 'iam/hashing/hashing.abstract.service';
     ConfigModule.forFeature(jwtConfig),
     PassportModule,
   ],
-  controllers: [AuthenticationController],
+  controllers: [AuthenticationController, AuthorizationController],
   providers: [
     AuthenticationService,
+    AuthorizationService,
     LocalStrategy,
     JwtStrategy,
     {

@@ -9,13 +9,12 @@ import {
 } from '@nestjs/common';
 import type { Response } from 'express';
 
-import { AuthenticationService } from 'iam/authentication/auth.service';
+import { AuthenticationService } from 'iam/authentication/authentication.service';
 import { CurrentUser } from 'iam/authentication/decorators/current-user.decorator';
 import { Public } from 'iam/authentication/decorators/public.decorator';
 import { LocalAuthGuard } from 'iam/authentication/guards/local-auth.guard';
 import type { RequestUser } from 'iam/authentication/interfaces/request-user.interface';
-
-export const AUTH_CONTROLLER_PREFIX = 'auth';
+import { AUTH_CONTROLLER_PREFIX } from 'iam/iam.constants';
 
 @Controller(AUTH_CONTROLLER_PREFIX)
 export class AuthenticationController {
