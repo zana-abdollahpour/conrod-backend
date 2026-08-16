@@ -11,7 +11,7 @@ import type { Response } from 'express';
 
 import { AuthenticationService } from 'iam/authentication/auth.service';
 import { CurrentUser } from 'iam/authentication/decorators/current-user.decorator';
-import { JwtAuthGuard } from 'iam/authentication/guards/jwt-auth.guard';
+import { Public } from 'iam/authentication/decorators/public.decorator';
 import { LocalAuthGuard } from 'iam/authentication/guards/local-auth.guard';
 import type { RequestUser } from 'iam/authentication/interfaces/request-user.interface';
 
@@ -23,6 +23,7 @@ export class AuthenticationController {
 
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
+  @Public()
   @Post('login')
   login(
     @CurrentUser() currentUser: RequestUser,
@@ -36,7 +37,6 @@ export class AuthenticationController {
     });
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@CurrentUser() { id }: RequestUser) {
     return this.authenticationService.getProfile(id);

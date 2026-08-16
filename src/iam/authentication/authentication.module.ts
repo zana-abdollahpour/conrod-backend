@@ -1,5 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -15,6 +16,7 @@ import { LocalStrategy } from 'iam/authentication/strategies/local.strategy';
 import { AuthenticationService } from './auth.service';
 
 import jwtConfig from 'iam/authentication/config/jwt.config';
+import { JwtAuthGuard } from 'iam/authentication/guards/jwt-auth.guard';
 import { JwtStrategy } from 'iam/authentication/strategies/jwt.strategy';
 
 @Module({
@@ -24,7 +26,15 @@ import { JwtStrategy } from 'iam/authentication/strategies/jwt.strategy';
     ConfigModule.forFeature(jwtConfig),
     PassportModule,
   ],
-  providers: [AuthenticationService, LocalStrategy, JwtStrategy],
+  providers: [
+    AuthenticationService,
+    LocalStrategy,
+    JwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
   controllers: [AuthenticationController],
 })
 export class AuthenticationModule implements NestModule {
