@@ -12,7 +12,9 @@ import {
 import { IdDto } from 'common/dto/id.dto';
 import { PaginationDto } from 'common/dto/pagination.dto';
 import { RemoveDto } from 'common/dto/remove.dto';
+import { CurrentUser } from 'iam/authentication/decorators/current-user.decorator';
 import { Public } from 'iam/authentication/decorators/public.decorator';
+import type { RequestUser } from 'iam/authentication/interfaces/request-user.interface';
 import { Roles } from 'iam/authorization/decorators/roles.decorator';
 import { Role } from 'iam/authorization/enum/roles.enum';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -42,17 +44,25 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param() { id }: IdDto, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+  update(
+    @Param() { id }: IdDto,
+    @Body() updateUserDto: UpdateUserDto,
+    @CurrentUser() currentUser: RequestUser,
+  ) {
+    return this.usersService.update(id, currentUser, updateUserDto);
   }
 
   @Delete(':id')
-  remove(@Param() { id }: IdDto, @Query() { soft }: RemoveDto) {
-    return this.usersService.remove(id, soft);
+  remove(
+    @Param() { id }: IdDto,
+    @Query() { soft }: RemoveDto,
+    @CurrentUser() currentUser: RequestUser,
+  ) {
+    return this.usersService.remove(id, currentUser, soft);
   }
 
   @Patch(':id/recover')
-  recover(@Param() { id }: IdDto) {
-    return this.usersService.recover(id);
+  recover(@Param() { id }: IdDto, @CurrentUser() currentUser: RequestUser) {
+    return this.usersService.recover(id, currentUser);
   }
 }

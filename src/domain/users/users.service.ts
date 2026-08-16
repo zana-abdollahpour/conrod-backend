@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -8,6 +9,9 @@ import { Repository } from 'typeorm';
 
 import { DefaultPageSizes } from 'common/common.config';
 import { PaginationDto } from 'common/dto/pagination.dto';
+import { RequestUser } from 'iam/authentication/interfaces/request-user.interface';
+import { assertUserAccess } from 'iam/authorization.utils';
+import { Role } from 'iam/authorization/enum/roles.enum';
 import { HashingService } from 'iam/hashing/hashing.abstract.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -56,7 +60,13 @@ export class UsersService {
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(
+    id: number,
+    currentUser: RequestUser,
+    updateUserDto: UpdateUserDto,
+  ) {
+    assertUserAccess(id, currentUser);
+
     let hashedPassword: string;
     if (updateUserDto.password) {
       hashedPassword = await this.hashingService.hash(updateUserDto.password);
@@ -75,15 +85,23 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  async remove(id: number, soft: boolean) {
+  async remove(id: number, currentUser: RequestUser, soft: boolean) {
     const user = await this.findOne(id);
+
+    assertUserAccess(id, currentUser);
+
+    if (currentUser.role !== Role.ADMIN && !soft) {
+      throw new ForbiddenException('Forbidden resource');
+    }
 
     return soft
       ? this.usersRepository.softRemove(user)
       : this.usersRepository.remove(user);
   }
 
-  async recover(id: number) {
+  async recover(id: number, currentUser: RequestUser) {
+    assertUserAccess(id, currentUser);
+
     const user = await this.usersRepository.findOne({
       where: { id },
       withDeleted: true,

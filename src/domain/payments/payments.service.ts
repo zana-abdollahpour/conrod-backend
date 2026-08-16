@@ -8,12 +8,14 @@ import { DataSource } from 'typeorm';
 import { Order } from 'domain/orders/entities/order.entity';
 import { OrderStatus } from 'domain/orders/enums/order-status.enum';
 import { Payment } from 'domain/payments/entities/payment.entity';
+import { RequestUser } from 'iam/authentication/interfaces/request-user.interface';
+import { assertUserAccess } from 'iam/authorization.utils';
 
 @Injectable()
 export class PaymentsService {
   constructor(private readonly dataSource: DataSource) {}
 
-  async payOrder(id: number) {
+  async payOrder(id: number, currentUser: RequestUser) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -21,8 +23,10 @@ export class PaymentsService {
     try {
       const order = await queryRunner.manager.findOne(Order, {
         where: { id },
-        relations: { payment: true },
+        relations: { payment: true, customer: true },
       });
+
+      assertUserAccess(order.customer.id, currentUser);
 
       if (!order) {
         throw new NotFoundException('Order not found');
