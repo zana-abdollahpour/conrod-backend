@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 
 import { DefaultPageSizes } from 'common/common.config';
 import { PaginationDto } from 'common/dto/pagination.dto';
+import { LoginDto } from 'iam/authentication/dto/login.dto';
 import { RequestUser } from 'iam/authentication/interfaces/request-user.interface';
 import { assertUserAccess } from 'iam/authorization.utils';
 import { Role } from 'iam/authorization/enum/roles.enum';
@@ -99,11 +100,11 @@ export class UsersService {
       : this.usersRepository.remove(user);
   }
 
-  async recover(id: number, currentUser: RequestUser) {
-    assertUserAccess(id, currentUser);
+  async recover(loginDto: LoginDto) {
+    const { email, password } = loginDto;
 
     const user = await this.usersRepository.findOne({
-      where: { id },
+      where: { email },
       withDeleted: true,
     });
 
@@ -115,10 +116,19 @@ export class UsersService {
       throw new ConflictException('User not deleted');
     }
 
+    const isPasswordMatch = await this.hashingService.compare(
+      password,
+      user.password,
+    );
+
+    if (!isPasswordMatch) {
+      throw new NotFoundException('User not found');
+    }
+
     await this.usersRepository.recover(user);
 
     return this.usersRepository.findOne({
-      where: { id },
+      where: { email },
     });
   }
 }

@@ -14,6 +14,7 @@ import { PaginationDto } from 'common/dto/pagination.dto';
 import { RemoveDto } from 'common/dto/remove.dto';
 import { CurrentUser } from 'iam/authentication/decorators/current-user.decorator';
 import { Public } from 'iam/authentication/decorators/public.decorator';
+import { LoginDto } from 'iam/authentication/dto/login.dto';
 import type { RequestUser } from 'iam/authentication/interfaces/request-user.interface';
 import { Roles } from 'iam/authorization/decorators/roles.decorator';
 import { Role } from 'iam/authorization/enum/roles.enum';
@@ -35,6 +36,12 @@ export class UsersController {
   @Get()
   findAll(@Query() paginationDto: PaginationDto) {
     return this.usersService.findAll(paginationDto);
+  }
+
+  @Public()
+  @Patch('recover')
+  recover(@Body() loginDto: LoginDto) {
+    return this.usersService.recover(loginDto);
   }
 
   @Roles(Role.MANAGER, Role.ADMIN)
@@ -59,10 +66,5 @@ export class UsersController {
     @CurrentUser() currentUser: RequestUser,
   ) {
     return this.usersService.remove(id, currentUser, soft);
-  }
-
-  @Patch(':id/recover')
-  recover(@Param() { id }: IdDto, @CurrentUser() currentUser: RequestUser) {
-    return this.usersService.recover(id, currentUser);
   }
 }
