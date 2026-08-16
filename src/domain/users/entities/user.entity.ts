@@ -3,6 +3,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { RegistryDates } from 'common/embedded/registry-date.embedded';
 import { Order } from 'domain/orders/entities/order.entity';
+import { Role } from 'iam/authorization/enum/roles.enum';
 
 @Entity()
 export class User {
@@ -14,6 +15,14 @@ export class User {
 
   @Column({ unique: true })
   email: string;
+
+  @Column({
+    type: 'enum',
+    enum: Role,
+    enumName: 'role_enum',
+    default: Role.USER,
+  })
+  role: Role;
 
   @Column({ unique: true })
   phone: string;
