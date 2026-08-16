@@ -33,8 +33,7 @@ export class AuthenticationService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    const requestUser: RequestUser = { id: user.id };
-    return requestUser;
+    return this.createRequestUser(user);
   }
 
   // TODO: implement a better solution
@@ -45,8 +44,7 @@ export class AuthenticationService {
       throw new UnauthorizedException('Invalid TOken');
     }
 
-    const requestUser: RequestUser = { id: payload.sub };
-    return requestUser;
+    return this.createRequestUser(user);
   }
 
   login(user: RequestUser) {
@@ -56,5 +54,9 @@ export class AuthenticationService {
 
   getProfile(id: number) {
     return this.usersRepository.findOneBy({ id });
+  }
+
+  private createRequestUser(user: User): RequestUser {
+    return { id: user.id, role: user.role };
   }
 }
