@@ -8,18 +8,20 @@ import { ProductModule } from './domain/product/product.module';
 import { UsersModule } from './domain/users/users.module';
 import { EnvModule } from './env/env.module';
 import { IamModule } from './iam/iam.module';
+import { SecurityModule } from './security/security.module';
 
 @Module({
   imports: [
+    EnvModule,
+    SecurityModule,
+    IamModule,
     UsersModule,
     CommonModule,
     DatabaseModule,
-    EnvModule,
     OrdersModule,
     PaymentsModule,
     CategoriesModule,
     ProductModule,
-    IamModule,
   ],
 })
 export class AppModule {}

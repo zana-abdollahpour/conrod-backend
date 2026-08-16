@@ -12,4 +12,7 @@ export const envValidationSchema = Joi.object({
 
   JWT_SECRET: Joi.required(),
   JWT_TTL: Joi.required(),
+
+  THROTTLER_TTL: Joi.number().integer().positive().required(),
+  THROTTLER_LIMIT: Joi.number().integer().positive().required(),
 });
