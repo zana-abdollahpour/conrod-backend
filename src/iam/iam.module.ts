@@ -18,6 +18,9 @@ import { AuthorizationService } from 'iam/authorization/authorization.service';
 import { AUTH_CONTROLLER_PREFIX } from 'iam/iam.constants';
 
 import { User } from 'domain/users/entities/user.entity';
+
+import { RolesGuard } from 'iam/authorization/guards/roles.guard';
+
 import { BcryptService } from 'iam/hashing/bcrypt.service';
 import { HashingService } from 'iam/hashing/hashing.abstract.service';
 
@@ -41,6 +44,10 @@ import { HashingService } from 'iam/hashing/hashing.abstract.service';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
   exports: [HashingService],
