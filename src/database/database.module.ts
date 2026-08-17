@@ -1,9 +1,16 @@
 import { Module } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { SeedingModule } from './seeding/seeding.module';
+
 import databaseConfig from 'database/database.config';
+import { NotFoundExceptionFilter } from 'database/exception-filters/not-found-exception.filter';
+import { SeedingModule } from './seeding/seeding.module';
 
 @Module({
-  imports: [TypeOrmModule.forRootAsync(databaseConfig.asProvider()), SeedingModule],
+  imports: [
+    TypeOrmModule.forRootAsync(databaseConfig.asProvider()),
+    SeedingModule,
+  ],
+  providers: [{ provide: APP_FILTER, useClass: NotFoundExceptionFilter }],
 })
 export class DatabaseModule {}
