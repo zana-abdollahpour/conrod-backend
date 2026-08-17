@@ -18,14 +18,10 @@ export class AuthenticationService {
   ) {}
 
   async validateLocal(email: string, password: string) {
-    const user = await this.usersRepository.findOne({
+    const user = await this.usersRepository.findOneOrFail({
       where: { email },
       select: { id: true, password: true },
     });
-
-    if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
-    }
 
     const isMatch = await this.hashingService.compare(password, user.password);
 
@@ -38,11 +34,9 @@ export class AuthenticationService {
 
   // TODO: implement a better solution
   async validateJwt(payload: JwtPayload) {
-    const user = await this.usersRepository.findOneBy({ id: payload.sub });
-
-    if (!user) {
-      throw new UnauthorizedException('Invalid TOken');
-    }
+    const user = await this.usersRepository.findOneByOrFail({
+      id: payload.sub,
+    });
 
     return this.createRequestUser(user);
   }
@@ -53,7 +47,7 @@ export class AuthenticationService {
   }
 
   getProfile(id: number) {
-    return this.usersRepository.findOneBy({ id });
+    return this.usersRepository.findOneByOrFail({ id });
   }
 
   private createRequestUser(user: User): RequestUser {

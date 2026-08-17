@@ -49,16 +49,10 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    const user = await this.usersRepository.findOne({
+    return await this.usersRepository.findOneOrFail({
       where: { id },
       relations: { orders: { items: true, payment: true } },
     });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    return user;
   }
 
   async update(
@@ -103,14 +97,10 @@ export class UsersService {
   async recover(loginDto: LoginDto) {
     const { email, password } = loginDto;
 
-    const user = await this.usersRepository.findOne({
+    const user = await this.usersRepository.findOneOrFail({
       where: { email },
       withDeleted: true,
     });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
 
     if (!user.isDeleted) {
       throw new ConflictException('User not deleted');
