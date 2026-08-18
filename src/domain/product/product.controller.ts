@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseFilePipe,
   Patch,
   Post,
   Query,
@@ -23,6 +24,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './product.service';
 
 import type { File } from 'files/types/file.types';
+import { createFileValidator } from 'files/util/file-validation.util';
 
 @Controller('products')
 export class ProductController {
@@ -60,7 +62,14 @@ export class ProductController {
 
   @UseInterceptors(FileInterceptor('file'))
   @Post(':id/image')
-  uploadImage(@UploadedFile() file: File) {
+  uploadImage(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: createFileValidator('2mb', 'jpg', 'jpeg'),
+      }),
+    )
+    file: File,
+  ) {
     return file; // TODO: implement me
   }
 }
