@@ -19,7 +19,7 @@ export class CreateProductDto {
   @IsOptional()
   @IsString()
   @Length(1, 500)
-  description: string;
+  description?: string;
 
   @IsCurrency()
   price: number;
