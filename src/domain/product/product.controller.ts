@@ -7,16 +7,22 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { IdDto } from 'common/dto/id.dto';
 import { PaginationDto } from 'common/dto/pagination.dto';
 import { Public } from 'iam/authentication/decorators/public.decorator';
 import { Roles } from 'iam/authorization/decorators/roles.decorator';
 import { Role } from 'iam/authorization/enum/roles.enum';
+
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './product.service';
+
+import type { File } from 'files/types/file.types';
 
 @Controller('products')
 export class ProductController {
@@ -50,5 +56,11 @@ export class ProductController {
   @Delete(':id')
   remove(@Param() { id }: IdDto) {
     return this.productsService.remove(id);
+  }
+
+  @UseInterceptors(FileInterceptor('file'))
+  @Post(':id/image')
+  uploadImage(@UploadedFile() file: File) {
+    return file; // TODO: implement me
   }
 }
