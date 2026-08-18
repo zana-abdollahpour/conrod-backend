@@ -7,4 +7,5 @@ interface IHttpError {
 
 export const HttpError = {
   NOT_FOUND: { status: HttpStatus.NOT_FOUND, error: 'Not found' },
+  CONFLICT: { status: HttpStatus.CONFLICT, error: 'Not found' },
 } as const satisfies Record<string, IHttpError>;
