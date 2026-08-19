@@ -1,35 +1,55 @@
-import { Injectable, StreamableFile } from '@nestjs/common';
+import { Injectable, NotFoundException, StreamableFile } from '@nestjs/common';
+import {
+  createReadStream,
+  mkdir,
+  pathExists,
+  readdir,
+  remove,
+  writeFile,
+} from 'fs-extra';
+import { join } from 'node:path';
 
+import { BASE_PATH } from 'files/storage/fs-extra/fs-extra.config';
 import { StorageService } from 'files/storage/storage.abstract.service';
 import { File } from 'files/types/file.types';
 
 @Injectable()
 export class FsExtraService implements StorageService {
-  saveFile(path: string, file: File): Promise<void> {
-    throw new Error('Method not implemented.');
+  async saveFile(path: string, file: File): Promise<void> {
+    const fullPath = join(BASE_PATH, path, file.originalname);
+    await writeFile(fullPath, file.buffer);
   }
 
-  createDir(path: string): Promise<void> {
-    throw new Error('Method not implemented.');
+  async createDir(path: string): Promise<void> {
+    const fullPath = join(BASE_PATH, path);
+    await mkdir(fullPath);
   }
 
   getFile(path: string): StreamableFile {
-    throw new Error('Method not implemented.');
+    const fullPath = join(BASE_PATH, path);
+    const stream = createReadStream(fullPath);
+    return new StreamableFile(stream);
   }
 
   getDirFileNames(path: string): Promise<string[]> {
-    throw new Error('Method not implemented.');
+    const fullPath = join(BASE_PATH, path);
+    return readdir(fullPath);
   }
 
-  getDirFileCount(path: string): Promise<number> {
-    throw new Error('Method not implemented.');
+  async getDirFileCount(path: string): Promise<number> {
+    const dirFileNames = await this.getDirFileNames(path);
+    return dirFileNames.length;
   }
 
-  delete(path: string): Promise<number> {
-    throw new Error('Method not implemented.');
+  async delete(path: string): Promise<void> {
+    const fullPath = join(BASE_PATH, path);
+    await remove(fullPath);
   }
 
-  validatePath(path: string): Promise<number> {
-    throw new Error('Method not implemented.');
+  async validatePath(path: string): Promise<void> {
+    const fullPath = join(BASE_PATH, path);
+    if (!(await pathExists(fullPath))) {
+      throw new NotFoundException('Path not found');
+    }
   }
 }
