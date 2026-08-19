@@ -10,6 +10,7 @@ import { EnvModule } from './env/env.module';
 import { IamModule } from './iam/iam.module';
 import { SecurityModule } from './security/security.module';
 import { DocsModule } from './docs/docs.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { DocsModule } from './docs/docs.module';
     CategoriesModule,
     ProductModule,
     DocsModule,
+    FilesModule,
   ],
 })
 export class AppModule {}

@@ -23,7 +23,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './product.service';
 
-import { MaxFileCounts } from 'files/file.config';
+import { MaxFileCounts } from 'files/files.config';
 import type { File } from 'files/types/file.types';
 import { createFileValidator } from 'files/util/file-validation.util';
 

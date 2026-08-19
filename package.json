@@ -57,6 +57,7 @@
     "@types/bcrypt": "^6.0.0",
     "@types/bytes": "^3.1.5",
     "@types/express": "^5.0.0",
+    "@types/fs-extra": "^11.0.4",
     "@types/jest": "^30.0.0",
     "@types/mime-types": "^3.0.1",
     "@types/multer": "^2.2.0",
