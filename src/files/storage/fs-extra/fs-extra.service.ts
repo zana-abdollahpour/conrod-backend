@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, StreamableFile } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  StreamableFile,
+} from '@nestjs/common';
 import {
   createReadStream,
   mkdir,
@@ -16,8 +21,10 @@ import { File } from 'files/types/file.types';
 @Injectable()
 export class FsExtraService implements StorageService {
   async saveFile(path: string, file: File): Promise<void> {
-    const fullPath = join(BASE_PATH, path, file.originalname);
-    await writeFile(fullPath, file.buffer);
+    const { originalname, buffer } = file;
+    const uniqueFileName = this.generateUniqueFilename(originalname);
+    const fullPath = join(BASE_PATH, path, uniqueFileName);
+    await writeFile(fullPath, buffer);
   }
 
   async createDir(path: string): Promise<void> {
@@ -51,5 +58,17 @@ export class FsExtraService implements StorageService {
     if (!(await pathExists(fullPath))) {
       throw new NotFoundException('Path not found');
     }
+  }
+
+  validateFileCount(count: number, max: number): void {
+    if (count > max) {
+      throw new ConflictException('File count exceeds maximum limit');
+    }
+  }
+
+  generateUniqueFilename(filename: string, separator = '-'): string {
+    const timestamp = Date.now();
+    const random = Math.floor(Math.random() * 1e9);
+    return `${timestamp}${separator}${random}${separator}${filename}`;
   }
 }
