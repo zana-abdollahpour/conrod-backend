@@ -11,6 +11,7 @@ import { EnvModule } from './env/env.module';
 import { FilesModule } from './files/files.module';
 import { IamModule } from './iam/iam.module';
 import { SecurityModule } from './security/security.module';
+import { StaticModule } from './static/static.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { SecurityModule } from './security/security.module';
     ProductModule,
     DocsModule,
     FilesModule,
+    StaticModule,
   ],
 })
 export class AppModule {}
