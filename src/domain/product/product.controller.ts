@@ -23,6 +23,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './product.service';
 
+import { IdFilenameDto } from 'files/dto/id-filename.dto';
 import { MaxFileCounts } from 'files/files.config';
 import type { File } from 'files/types/file.types';
 import { createFileValidator } from 'files/util/file-validation.util';
@@ -61,9 +62,11 @@ export class ProductController {
     return this.productsService.remove(id);
   }
 
+  @Roles(Role.MANAGER)
   @UseInterceptors(FilesInterceptor('files', MaxFileCounts.PRODUCT_IMAGES))
   @Post(':id/images')
   uploadImage(
+    @Param() { id }: IdDto,
     @UploadedFiles(
       new ParseFilePipe({
         validators: createFileValidator('2mb', 'jpg', 'jpeg'),
@@ -71,6 +74,18 @@ export class ProductController {
     )
     files: File[],
   ) {
-    return files; // TODO: implement me
+    return this.productsService.uploadImages(id, files);
+  }
+
+  @Public()
+  @Get(':id/images/:filename')
+  downloadImages(@Param() { id, filename }: IdFilenameDto) {
+    return this.productsService.downloadImage(id, filename);
+  }
+
+  @Roles(Role.MANAGER)
+  @Delete(':id/images/:filename')
+  deleteImages(@Param() { id, filename }: IdFilenameDto) {
+    return this.productsService.downloadImage(id, filename);
   }
 }

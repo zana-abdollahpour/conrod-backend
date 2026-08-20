@@ -54,4 +54,12 @@ export class ProductsService {
 
     return this.productsRepository.remove(product);
   }
+
+  uploadImages(id: number, files: Express.Multer.File[]) {
+    throw new Error('Method not implemented.');
+  }
+
+  downloadImage(id: number, filename: string) {
+    throw new Error('Method not implemented.');
+  }
 }
