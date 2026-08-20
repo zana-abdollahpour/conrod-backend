@@ -1,7 +1,9 @@
 import {
   FileTypeValidator,
   FileValidator,
+  HttpStatus,
   MaxFileSizeValidator,
+  ParseFilePipe,
 } from '@nestjs/common';
 import bytes from 'bytes';
 import { lookup } from 'mime-types';
@@ -9,7 +11,7 @@ import { lookup } from 'mime-types';
 import { NonEmptyArray } from 'common/util/type.utils';
 import { FileSignatureValidator } from 'files/validators/file-signature.validator';
 
-type AllowedFileType = 'jpg' | 'jpeg' | 'pdf';
+type AllowedFileType = 'png' | 'jpeg' | 'pdf';
 type MaxSize = `${number}${bytes.Unit}`;
 
 const createMimeTypesRegex = (fileTypes: AllowedFileType[]) => {
@@ -17,9 +19,9 @@ const createMimeTypesRegex = (fileTypes: AllowedFileType[]) => {
   return new RegExp(mediaTypes.join('|'));
 };
 
-export const createFileValidator = (
+const createFileValidator = (
   maxSize: MaxSize,
-  ...fileTypes: NonEmptyArray<AllowedFileType>
+  fileTypes: NonEmptyArray<AllowedFileType>,
 ): FileValidator[] => {
   const fileMimeTypesRegex = createMimeTypesRegex(fileTypes);
 
@@ -29,3 +31,12 @@ export const createFileValidator = (
     new FileSignatureValidator(),
   ];
 };
+
+export const createParseFilePipe = (
+  maxSize: MaxSize,
+  ...fileTypes: NonEmptyArray<AllowedFileType>
+) =>
+  new ParseFilePipe({
+    validators: createFileValidator(maxSize, fileTypes),
+    errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+  });

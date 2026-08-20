@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseFilePipe,
   Patch,
   Post,
   Query,
@@ -26,7 +25,7 @@ import { ProductsService } from './product.service';
 import { IdFilenameDto } from 'files/dto/id-filename.dto';
 import { MaxFileCounts } from 'files/files.config';
 import type { File } from 'files/types/file.types';
-import { createFileValidator } from 'files/util/file-validation.util';
+import { createParseFilePipe } from 'files/util/file-validation.util';
 
 @Controller('products')
 export class ProductController {
@@ -67,12 +66,7 @@ export class ProductController {
   @Post(':id/images')
   uploadImage(
     @Param() { id }: IdDto,
-    @UploadedFiles(
-      new ParseFilePipe({
-        validators: createFileValidator('2mb', 'jpg', 'jpeg'),
-      }),
-    )
-    files: File[],
+    @UploadedFiles(createParseFilePipe('2mb', 'png', 'jpeg')) files: File[],
   ) {
     return this.productsService.uploadImages(id, files);
   }
