@@ -5,5 +5,6 @@ import { StorageService } from './storage/storage.abstract.service';
 
 @Module({
   providers: [{ provide: StorageService, useClass: FsExtraService }],
+  exports: [StorageService],
 })
 export class FilesModule {}
