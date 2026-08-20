@@ -22,8 +22,11 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './product.service';
 
+import { ApiBody, ApiConsumes, ApiOkResponse } from '@nestjs/swagger';
 import { IdFilenameDto } from 'files/dto/id-filename.dto';
-import { MaxFileCounts } from 'files/files.config';
+import { MULTIPART_FORMDATA_KEY, MaxFileCounts } from 'files/files.config';
+import { FileSchema } from 'files/schemas/file.schema';
+import { FilesSchema } from 'files/schemas/files.schema';
 import type { File } from 'files/types/file.types';
 import { createParseFilePipe } from 'files/util/file-validation.util';
 
@@ -61,6 +64,8 @@ export class ProductController {
     return this.productsService.remove(id);
   }
 
+  @ApiConsumes(MULTIPART_FORMDATA_KEY)
+  @ApiBody({ type: FilesSchema })
   @Roles(Role.MANAGER)
   @UseInterceptors(FilesInterceptor('files', MaxFileCounts.PRODUCT_IMAGES))
   @Post(':id/images')
@@ -71,6 +76,7 @@ export class ProductController {
     return this.productsService.uploadImages(id, files);
   }
 
+  @ApiOkResponse({ type: FileSchema })
   @Public()
   @Get(':id/images/:filename')
   downloadImages(@Param() { id, filename }: IdFilenameDto) {
