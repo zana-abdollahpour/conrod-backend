@@ -86,6 +86,6 @@ export class ProductController {
   @Roles(Role.MANAGER)
   @Delete(':id/images/:filename')
   deleteImages(@Param() { id, filename }: IdFilenameDto) {
-    return this.productsService.downloadImage(id, filename);
+    return this.productsService.deleteImage(id, filename);
   }
 }

@@ -60,6 +60,11 @@ export class FsExtraService implements StorageService {
     }
   }
 
+  async pathExists(path: string): Promise<boolean> {
+    const fullPath = join(BASE_PATH, path);
+    return await pathExists(fullPath);
+  }
+
   validateFileCount(count: number, max: number): void {
     if (count > max) {
       throw new ConflictException('File count exceeds maximum limit');

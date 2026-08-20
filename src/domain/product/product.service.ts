@@ -1,9 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { join } from 'node:path';
+import { DataSource, Repository } from 'typeorm';
 
 import { DefaultPageSizes } from 'common/common.config';
 import { PaginationDto } from 'common/dto/pagination.dto';
+
+import { FilePath, MaxFileCounts } from 'files/files.config';
+import { StorageService } from 'files/storage/storage.abstract.service';
+import { File } from 'files/types/file.types';
+
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
@@ -13,6 +19,8 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>,
+    private readonly storageService: StorageService,
+    private readonly dataSource: DataSource,
   ) {}
 
   create(createProductDto: CreateProductDto) {
@@ -50,16 +58,68 @@ export class ProductsService {
   }
 
   async remove(id: number) {
-    const product = await this.findOne(id);
+    return this.dataSource.transaction(async (manager) => {
+      const productsRepository = manager.getRepository(Product);
 
-    return this.productsRepository.remove(product);
+      const product = await productsRepository.findOneByOrFail({ id });
+      await productsRepository.remove(product);
+
+      await this.deleteBaseDir(id);
+
+      return product;
+    });
   }
 
-  uploadImages(id: number, files: Express.Multer.File[]) {
-    throw new Error('Method not implemented.');
+  async uploadImages(id: number, files: File[]) {
+    await this.findOne(id);
+
+    const { BASE, IMAGES } = FilePath.Products;
+    const path = join(BASE, id.toString(), IMAGES);
+
+    if (await this.storageService.pathExists(path)) {
+      const incomingFileCount = files.length;
+      const dirFileCount = await this.storageService.getDirFileCount(path);
+      const totalFileCount = incomingFileCount + dirFileCount;
+
+      this.storageService.validateFileCount(
+        totalFileCount,
+        MaxFileCounts.PRODUCT_IMAGES,
+      );
+    }
+
+    await this.storageService.createDir(path);
+
+    await Promise.all(
+      files.map((file) => this.storageService.saveFile(path, file)),
+    );
   }
 
-  downloadImage(id: number, filename: string) {
-    throw new Error('Method not implemented.');
+  async downloadImage(id: number, filename: string) {
+    await this.findOne(id);
+
+    const { BASE, IMAGES } = FilePath.Products;
+    const path = join(BASE, id.toString(), IMAGES, filename);
+
+    await this.storageService.validatePath(path);
+
+    return this.storageService.getFile(path);
+  }
+
+  async deleteImage(id: number, filename: string) {
+    await this.findOne(id);
+
+    const { BASE, IMAGES } = FilePath.Products;
+    const path = join(BASE, id.toString(), IMAGES, filename);
+
+    await this.storageService.validatePath(path);
+
+    return this.storageService.delete(path);
+  }
+
+  private async deleteBaseDir(id: number) {
+    const { BASE } = FilePath.Products;
+    const path = join(BASE, id.toString());
+
+    await this.storageService.delete(path);
   }
 }

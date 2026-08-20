@@ -18,6 +18,8 @@ export abstract class StorageService {
 
   abstract validatePath(path: string): Promise<void>;
 
+  abstract pathExists(path: string): Promise<boolean>;
+
   abstract validateFileCount(count: number, max: number): void;
 
   abstract generateUniqueFilename(filename: string): string;
