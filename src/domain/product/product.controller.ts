@@ -23,12 +23,14 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './product.service';
 
 import { ApiBody, ApiConsumes, ApiOkResponse } from '@nestjs/swagger';
+import { Product } from 'domain/product/entities/product.entity';
 import { IdFilenameDto } from 'files/dto/id-filename.dto';
 import { MULTIPART_FORMDATA_KEY, MaxFileCounts } from 'files/files.config';
 import { FileSchema } from 'files/schemas/file.schema';
 import { FilesSchema } from 'files/schemas/files.schema';
 import type { File } from 'files/types/file.types';
 import { createParseFilePipe } from 'files/util/file-validation.util';
+import { ApiPaginatedResponse } from 'querying/decorators/api-paginated-response.decorator';
 
 @Controller('products')
 export class ProductController {
@@ -40,6 +42,7 @@ export class ProductController {
     return this.productsService.create(createProductDto);
   }
 
+  @ApiPaginatedResponse(Product)
   @Public()
   @Get()
   findAll(@Query() paginationDto: PaginationDto) {

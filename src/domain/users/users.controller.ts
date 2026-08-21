@@ -11,12 +11,14 @@ import {
 
 import { IdDto } from 'common/dto/id.dto';
 import { RemoveDto } from 'common/dto/remove.dto';
+import { User } from 'domain/users/entities/user.entity';
 import { CurrentUser } from 'iam/authentication/decorators/current-user.decorator';
 import { Public } from 'iam/authentication/decorators/public.decorator';
 import { LoginDto } from 'iam/authentication/dto/login.dto';
 import type { RequestUser } from 'iam/authentication/interfaces/request-user.interface';
 import { Roles } from 'iam/authorization/decorators/roles.decorator';
 import { Role } from 'iam/authorization/enum/roles.enum';
+import { ApiPaginatedResponse } from 'querying/decorators/api-paginated-response.decorator';
 import { PaginationDto } from 'querying/dto/pagination.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -32,6 +34,7 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @ApiPaginatedResponse(User)
   @Roles(Role.MANAGER, Role.ADMIN)
   @Get()
   findAll(@Query() paginationDto: PaginationDto) {

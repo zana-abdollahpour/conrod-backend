@@ -10,9 +10,11 @@ import {
 } from '@nestjs/common';
 
 import { IdDto } from 'common/dto/id.dto';
+import { Category } from 'domain/categories/entities/category.entity';
 import { Public } from 'iam/authentication/decorators/public.decorator';
 import { Roles } from 'iam/authorization/decorators/roles.decorator';
 import { Role } from 'iam/authorization/enum/roles.enum';
+import { ApiPaginatedResponse } from 'querying/decorators/api-paginated-response.decorator';
 import { PaginationDto } from 'querying/dto/pagination.dto';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -28,6 +30,7 @@ export class CategoriesController {
     return this.categoriesService.create(createCategoryDto);
   }
 
+  @ApiPaginatedResponse(Category)
   @Public()
   @Get()
   findAll(@Query() paginationDto: PaginationDto) {

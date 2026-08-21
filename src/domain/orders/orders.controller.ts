@@ -9,6 +9,8 @@ import {
 } from '@nestjs/common';
 
 import { IdDto } from 'common/dto/id.dto';
+import { Order } from 'domain/orders/entities/order.entity';
+import { ApiPaginatedResponse } from 'querying/decorators/api-paginated-response.decorator';
 import { PaginationDto } from 'querying/dto/pagination.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrdersService } from './orders.service';
@@ -22,6 +24,7 @@ export class OrdersController {
     return this.ordersService.create(createOrderDto);
   }
 
+  @ApiPaginatedResponse(Order)
   @Get()
   findAll(@Query() paginationDto: PaginationDto) {
     return this.ordersService.findAll(paginationDto);
