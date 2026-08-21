@@ -10,6 +10,7 @@ import { UsersModule } from './domain/users/users.module';
 import { EnvModule } from './env/env.module';
 import { FilesModule } from './files/files.module';
 import { IamModule } from './iam/iam.module';
+import { QueryingModule } from './querying/querying.module';
 import { SecurityModule } from './security/security.module';
 import { StaticModule } from './static/static.module';
 
@@ -28,6 +29,7 @@ import { StaticModule } from './static/static.module';
     DocsModule,
     FilesModule,
     StaticModule,
+    QueryingModule,
   ],
 })
 export class AppModule {}

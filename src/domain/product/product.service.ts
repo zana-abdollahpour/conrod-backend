@@ -10,6 +10,7 @@ import { FilePath, MaxFileCounts } from 'files/files.config';
 import { StorageService } from 'files/storage/storage.abstract.service';
 import { File } from 'files/types/file.types';
 
+import { PaginationService } from 'querying/pagination.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
@@ -21,6 +22,7 @@ export class ProductsService {
     private readonly productsRepository: Repository<Product>,
     private readonly storageService: StorageService,
     private readonly dataSource: DataSource,
+    private readonly paginationService: PaginationService,
   ) {}
 
   create(createProductDto: CreateProductDto) {
@@ -29,17 +31,19 @@ export class ProductsService {
   }
 
   async findAll(paginationDto: PaginationDto) {
-    const { limit, offset } = paginationDto;
+    const { page } = paginationDto;
 
-    const skip = offset;
-    const take = limit || DefaultPageSizes.PRODUCTS;
+    const limit = paginationDto.limit || DefaultPageSizes.PRODUCTS;
+    const offset = this.paginationService.calculateOffset(limit, page);
 
     const [products, count] = await this.productsRepository.findAndCount({
-      skip,
-      take,
+      skip: offset,
+      take: limit,
     });
 
-    return { products, count };
+    const meta = this.paginationService.createMeta(limit, page, count);
+
+    return { products, meta };
   }
 
   async findOne(id: number) {
