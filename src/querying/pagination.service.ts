@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PaginationMeta } from 'querying/interfaces/pagination-meta.interface';
+import { IPaginationMeta } from 'querying/interfaces/pagination-meta.interface';
 
 @Injectable()
 export class PaginationService {
@@ -7,7 +7,7 @@ export class PaginationService {
     return (page - 1) * limit;
   }
 
-  createMeta(limit: number, page: number, count: number): PaginationMeta {
+  createMeta(limit: number, page: number, count: number): IPaginationMeta {
     const totalPages = Math.ceil(count / limit);
 
     const hasNextPage = page < totalPages;
