@@ -13,10 +13,10 @@ import {
 import { FilesInterceptor } from '@nestjs/platform-express';
 
 import { IdDto } from 'common/dto/id.dto';
-import { PaginationDto } from 'common/dto/pagination.dto';
 import { Public } from 'iam/authentication/decorators/public.decorator';
 import { Roles } from 'iam/authorization/decorators/roles.decorator';
 import { Role } from 'iam/authorization/enum/roles.enum';
+import { PaginationDto } from 'querying/dto/pagination.dto';
 
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';

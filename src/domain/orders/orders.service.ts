@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { DefaultPageSizes } from 'common/common.config';
-import { PaginationDto } from 'common/dto/pagination.dto';
 import { OrderItemDto } from 'domain/orders/dto/order-item.dto';
 import { OrderItem } from 'domain/orders/entities/order-item.entity';
 import { Product } from 'domain/product/entities/product.entity';
+import { PaginationDto } from 'querying/dto/pagination.dto';
+import { DefaultPageSizes } from 'querying/querying.config';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { Order } from './entities/order.entity';
 

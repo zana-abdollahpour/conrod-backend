@@ -7,13 +7,13 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { DefaultPageSizes } from 'common/common.config';
-import { PaginationDto } from 'common/dto/pagination.dto';
 import { LoginDto } from 'iam/authentication/dto/login.dto';
 import { RequestUser } from 'iam/authentication/interfaces/request-user.interface';
 import { assertUserAccess } from 'iam/authorization.utils';
 import { Role } from 'iam/authorization/enum/roles.enum';
 import { HashingService } from 'iam/hashing/hashing.abstract.service';
+import { PaginationDto } from 'querying/dto/pagination.dto';
+import { DefaultPageSizes } from 'querying/querying.config';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';

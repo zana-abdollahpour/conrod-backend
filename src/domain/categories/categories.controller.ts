@@ -10,10 +10,10 @@ import {
 } from '@nestjs/common';
 
 import { IdDto } from 'common/dto/id.dto';
-import { PaginationDto } from 'common/dto/pagination.dto';
 import { Public } from 'iam/authentication/decorators/public.decorator';
 import { Roles } from 'iam/authorization/decorators/roles.decorator';
 import { Role } from 'iam/authorization/enum/roles.enum';
+import { PaginationDto } from 'querying/dto/pagination.dto';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';

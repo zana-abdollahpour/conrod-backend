@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { join } from 'node:path';
 import { DataSource, Repository } from 'typeorm';
 
-import { DefaultPageSizes } from 'common/common.config';
-import { PaginationDto } from 'common/dto/pagination.dto';
+import { PaginationDto } from 'querying/dto/pagination.dto';
+import { DefaultPageSizes } from 'querying/querying.config';
 
 import { FilePath, MaxFileCounts } from 'files/files.config';
 import { StorageService } from 'files/storage/storage.abstract.service';

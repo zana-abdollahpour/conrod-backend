@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 
 import { IdDto } from 'common/dto/id.dto';
-import { PaginationDto } from 'common/dto/pagination.dto';
 import { RemoveDto } from 'common/dto/remove.dto';
 import { CurrentUser } from 'iam/authentication/decorators/current-user.decorator';
 import { Public } from 'iam/authentication/decorators/public.decorator';
@@ -18,6 +17,7 @@ import { LoginDto } from 'iam/authentication/dto/login.dto';
 import type { RequestUser } from 'iam/authentication/interfaces/request-user.interface';
 import { Roles } from 'iam/authorization/decorators/roles.decorator';
 import { Role } from 'iam/authorization/enum/roles.enum';
+import { PaginationDto } from 'querying/dto/pagination.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';

@@ -6,8 +6,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { DefaultPageSizes } from 'common/common.config';
-import { PaginationDto } from 'common/dto/pagination.dto';
+import { PaginationDto } from 'querying/dto/pagination.dto';
+import { DefaultPageSizes } from 'querying/querying.config';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
