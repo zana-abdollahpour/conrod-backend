@@ -28,13 +28,18 @@ export class ProductsService {
     return this.productsRepository.save(product);
   }
 
-  findAll(paginationDto: PaginationDto) {
+  async findAll(paginationDto: PaginationDto) {
     const { limit, offset } = paginationDto;
 
     const skip = offset;
     const take = limit || DefaultPageSizes.PRODUCTS;
 
-    return this.productsRepository.find({ skip, take });
+    const [products, count] = await this.productsRepository.findAndCount({
+      skip,
+      take,
+    });
+
+    return { products, count };
   }
 
   async findOne(id: number) {
