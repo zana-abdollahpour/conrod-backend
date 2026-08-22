@@ -42,7 +42,7 @@ export class ProductsService {
       where: {
         name: this.filteringService.contains(name),
         categories: { id: categoryId },
-        price,
+        price: this.filteringService.compare(price),
       },
       order: { [sort]: order },
       skip: offset,
