@@ -16,13 +16,13 @@ import { IdDto } from 'common/dto/id.dto';
 import { Public } from 'iam/authentication/decorators/public.decorator';
 import { Roles } from 'iam/authorization/decorators/roles.decorator';
 import { Role } from 'iam/authorization/enum/roles.enum';
-import { PaginationDto } from 'querying/dto/pagination.dto';
 
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './product.service';
 
 import { ApiBody, ApiConsumes, ApiOkResponse } from '@nestjs/swagger';
+import { QueryProductsDto } from 'domain/product/dto/querying/query-products.dto';
 import { Product } from 'domain/product/entities/product.entity';
 import { IdFilenameDto } from 'files/dto/id-filename.dto';
 import { MULTIPART_FORMDATA_KEY, MaxFileCounts } from 'files/files.config';
@@ -45,8 +45,8 @@ export class ProductController {
   @ApiPaginatedResponse(Product)
   @Public()
   @Get()
-  findAll(@Query() paginationDto: PaginationDto) {
-    return this.productsService.findAll(paginationDto);
+  findAll(@Query() queryProductsDto: QueryProductsDto) {
+    return this.productsService.findAll(queryProductsDto);
   }
 
   @Public()
