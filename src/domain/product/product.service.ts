@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { join } from 'node:path';
-import { DataSource, ILike, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 
 import { DefaultPageSizes } from 'querying/querying.config';
 
@@ -10,6 +10,7 @@ import { StorageService } from 'files/storage/storage.abstract.service';
 import { File } from 'files/types/file.types';
 
 import { QueryProductsDto } from 'domain/product/dto/querying/query-products.dto';
+import { FilteringService } from 'querying/filtering.service';
 import { PaginationService } from 'querying/pagination.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -23,6 +24,7 @@ export class ProductsService {
     private readonly storageService: StorageService,
     private readonly dataSource: DataSource,
     private readonly paginationService: PaginationService,
+    private readonly filteringService: FilteringService,
   ) {}
 
   create(createProductDto: CreateProductDto) {
@@ -38,7 +40,7 @@ export class ProductsService {
 
     const [products, count] = await this.productsRepository.findAndCount({
       where: {
-        name: name ? ILike(`*${name}*`) : undefined,
+        name: this.filteringService.contains(name),
         categories: { id: categoryId },
         price,
       },
